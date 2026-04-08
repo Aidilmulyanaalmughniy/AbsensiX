@@ -9,12 +9,18 @@ export const useAttendance = (kelas?: string, tanggal?: string, uid?: string) =>
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
+  if (!uid && !kelas && !tanggal) {
+    setLoading(false);
+    return;
+  }
+
   setLoading(true);
 
   const constraints: any[] = [];
 
   if (uid) {
-    constraints.push(where('student_id', '==', uid)); // 🔥 INI FIX NYA
+    console.log("UID QUERY:", uid); // DEBUG
+    constraints.push(where('student_id', '==', uid));
   } else {
     if (kelas) constraints.push(where('kelas', '==', kelas));
     if (tanggal) constraints.push(where('tanggal', '==', tanggal));
@@ -25,8 +31,8 @@ useEffect(() => {
   const unsub = onSnapshot(q, (snap) => {
     const data: AttendanceRecord[] = [];
     snap.forEach(d => data.push({ id: d.id, ...d.data() } as AttendanceRecord));
-    
-    console.log("DATA:", data); // DEBUG
+
+    console.log("HASIL:", data); // 🔥 DEBUG
 
     setRecords(data);
     setLoading(false);

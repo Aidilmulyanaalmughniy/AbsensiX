@@ -6,9 +6,9 @@ import { UserCheck, Clock, Calendar, TrendingUp, Loader2 } from 'lucide-react';
 const StudentDashboard = () => {
   const { user } = useAuthStore();
   const today = new Date().toISOString().split('T')[0];
-  const { records: allRecords, loading } = useAttendance(undefined, user?.uid);
+  const { records: allRecords, loading } = useAttendance(undefined, undefined, user?.uid);
 
-  const myRecords = allRecords.filter(r => r.nama === user?.nama_lengkap || r.student_id === user?.uid);
+    const myRecords = allRecords;
   
   const recentRecords = [...myRecords].sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 5);
 

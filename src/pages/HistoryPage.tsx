@@ -17,19 +17,21 @@ const HistoryPage = () => {
   });
   const [filterStatus, setFilterStatus] = useState<string>('');
 
-  const { records: allRecords, loading } = useAttendance(undefined, user?.uid);
+  const { records: allRecords, loading } = useAttendance(undefined, undefined, user?.uid);
 
-  const myRecords = useMemo(() => {
-    let records = allRecords.filter(r => r.nama === user?.nama_lengkap || r.student_id === user?.uid);
-    if (filterMonth) {
-      records = records.filter(r => r.tanggal.startsWith(filterMonth));
-    }
-    if (filterStatus) {
-      records = records.filter(r => r.status === filterStatus);
-    }
-    return records.sort((a, b) => b.tanggal.localeCompare(a.tanggal));
-  }, [allRecords, user, filterMonth, filterStatus]);
+const myRecords = useMemo(() => {
+  let records = [...allRecords]; // ✅ FIX DI SINI
 
+  if (filterMonth) {
+    records = records.filter(r => r.tanggal.startsWith(filterMonth));
+  }
+
+  if (filterStatus) {
+    records = records.filter(r => r.status === filterStatus);
+  }
+
+  return records.sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+}, [allRecords, filterMonth, filterStatus]);
   const stats = useMemo(() => {
     const total = myRecords.length;
     const hadir = myRecords.filter(r => r.status === 'hadir').length;
