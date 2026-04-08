@@ -54,7 +54,10 @@ export const useClassStats = (kelas?: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+const offset = now.getTimezoneOffset() * 60000;
+const local = new Date(now.getTime() - offset);
+const today = local.toISOString().split('T')[0];
     const constraints: any[] = [where('tanggal', '==', today)];
     if (kelas) constraints.push(where('kelas', '==', kelas));
 
@@ -111,7 +114,10 @@ export const useLeaderboard = (kelas?: string) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
+    const now = new Date();
+const offset = now.getTimezoneOffset() * 60000;
+const local = new Date(now.getTime() - offset);
+const today = local.toISOString().split('T')[0];
     const constraints: any[] = [
       where('tanggal', '==', today),
       where('status', '==', 'hadir'),
@@ -157,9 +163,10 @@ export const useWeeklyData = () => {
       for (let i = 4; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(d.getDate() - i);
-        const dateStr = d.toISOString().split('T')[0];
+        const offset = d.getTimezoneOffset() * 60000;
+const local = new Date(d.getTime() - offset);
+const dateStr = local.toISOString().split('T')[0];
         const dayName = days[d.getDay()];
-
         const q = query(collection(db, 'attendance'), where('tanggal', '==', dateStr));
         const snap = await getDocs(q);
         
