@@ -4,30 +4,36 @@ import { db } from '@/lib/firebase';
 import type { AttendanceRecord, ClassStats, LeaderboardEntry } from '@/types';
 
 // ===== ATTENDANCE HOOK =====
-export const useAttendance = (kelas?: string, tanggal?: string) => {
+export const useAttendance = (kelas?: string, tanggal?: string, uid?: string) => {
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    setLoading(true);
-    const constraints: any[] = [];
+useEffect(() => {
+  setLoading(true);
+
+  const constraints: any[] = [];
+
+  if (uid) {
+    constraints.push(where('student_id', '==', uid)); // 🔥 INI FIX NYA
+  } else {
     if (kelas) constraints.push(where('kelas', '==', kelas));
     if (tanggal) constraints.push(where('tanggal', '==', tanggal));
+  }
 
-    const q = query(collection(db, 'attendance'), ...constraints);
+  const q = query(collection(db, 'attendance'), ...constraints);
+
+  const unsub = onSnapshot(q, (snap) => {
+    const data: AttendanceRecord[] = [];
+    snap.forEach(d => data.push({ id: d.id, ...d.data() } as AttendanceRecord));
     
-    const unsub = onSnapshot(q, (snap) => {
-      const data: AttendanceRecord[] = [];
-      snap.forEach(d => data.push({ id: d.id, ...d.data() } as AttendanceRecord));
-      setRecords(data);
-      setLoading(false);
-    }, (err) => {
-      console.error('Attendance listener error:', err);
-      setLoading(false);
-    });
+    console.log("DATA:", data); // DEBUG
 
-    return unsub;
-  }, [kelas, tanggal]);
+    setRecords(data);
+    setLoading(false);
+  });
+
+  return unsub;
+}, [kelas, tanggal, uid]);
 
   const updateStatus = useCallback(async (id: string, status: AttendanceRecord['status']) => {
     await setDoc(doc(db, 'attendance', id), { status }, { merge: true });
