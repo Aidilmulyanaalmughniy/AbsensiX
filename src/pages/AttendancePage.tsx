@@ -18,7 +18,11 @@ const AttendancePage = () => {
   const { user } = useAuthStore();
   const isClassOnly = user?.role === 'wakel' || user?.role === 'km' || user?.role === 'absensi';
   const [filterKelas, setFilterKelas] = useState(isClassOnly ? user?.kelas || '' : '');
-  const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
+  const now = new Date();
+const offset = now.getTimezoneOffset() * 60000;
+const local = new Date(now.getTime() - offset);
+
+const [filterDate, setFilterDate] = useState(local.toISOString().split('T')[0]);
   const kelasList = useKelasList();
 
   const queryKelas = isClassOnly ? user?.kelas : (filterKelas || undefined);
