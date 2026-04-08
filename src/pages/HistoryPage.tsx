@@ -17,7 +17,7 @@ const HistoryPage = () => {
   });
   const [filterStatus, setFilterStatus] = useState<string>('');
 
-  const { records: allRecords, loading } = useAttendance(user?.kelas, undefined);
+  const { records: allRecords, loading } = useAttendance(undefined, user?.uid);
 
   const myRecords = useMemo(() => {
     let records = allRecords.filter(r => r.nama === user?.nama_lengkap || r.student_id === user?.uid);
