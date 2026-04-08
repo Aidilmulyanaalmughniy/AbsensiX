@@ -149,9 +149,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   addUser: async (userData) => {
     try {
-      const email = `${userData.username}@absensix.local`;
+      const email = (userData as any).email || `${userData.username}@absensix.local`;
       const cred = await createUserWithEmailAndPassword(auth, email, userData.password);
-      const { password: _, ...userWithoutPassword } = userData;
+      const { password: _, email: __, ...userWithoutPassword } = userData as any;
       const userToSave = {
         ...userWithoutPassword,
         uid: cred.user.uid,

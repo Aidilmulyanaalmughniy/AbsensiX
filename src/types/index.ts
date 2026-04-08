@@ -10,6 +10,7 @@ export interface User {
   isOsis: boolean;
   enabled: boolean;
   rfid_uid?: string;
+  email?: string;
 }
 
 export type AttendanceStatus = 'hadir' | 'sakit' | 'izin' | 'alpha' | 'belum';
