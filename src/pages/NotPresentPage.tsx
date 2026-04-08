@@ -11,7 +11,10 @@ const NotPresentPage = () => {
   const [search, setSearch] = useState('');
   const [filterKelas, setFilterKelas] = useState(isClassOnly ? user?.kelas || '' : '');
   const kelasList = useKelasList();
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+const offset = now.getTimezoneOffset() * 60000;
+const local = new Date(now.getTime() - offset);
+const today = local.toISOString().split('T')[0];
 
   const queryKelas = isClassOnly ? user?.kelas : (filterKelas || undefined);
   const { stats, loading: statsLoading } = useClassStats(queryKelas);
