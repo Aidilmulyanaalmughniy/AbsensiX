@@ -12,24 +12,28 @@ useEffect(() => {
   setLoading(true);
   const constraints: any[] = [];
 
-if (uid) {
-  constraints.push(where('student_id', '==', uid));
-}
+  if (uid) {
+    constraints.push(where('student_id', '==', uid));
+  }
 
-if (kelas) {
-  constraints.push(where('kelas', '==', kelas));
-}
+  if (kelas) {
+    constraints.push(where('kelas', '==', kelas));
+  }
 
-if (tanggal) {
-  constraints.push(where('tanggal', '==', tanggal));
-}
-  const q = query(collection(db, 'attendance'), ...constraints);
+  if (tanggal) {
+    constraints.push(where('tanggal', '==', tanggal));
+  }
+
+  // 🔥 INI YANG PENTING
+  const q = constraints.length > 0
+    ? query(collection(db, 'attendance'), ...constraints)
+    : collection(db, 'attendance');
 
   const unsub = onSnapshot(q, (snap) => {
     const data: AttendanceRecord[] = [];
     snap.forEach(d => data.push({ id: d.id, ...d.data() } as AttendanceRecord));
 
-    console.log("HASIL:", data); // 🔥 DEBUG
+    console.log("HASIL:", data);
 
     setRecords(data);
     setLoading(false);
