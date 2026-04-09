@@ -9,9 +9,7 @@ export const useAttendance = (kelas?: string, tanggal?: string, uid?: string) =>
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
- 
   setLoading(true);
-
   const constraints: any[] = [];
 
 if (uid) {
