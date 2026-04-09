@@ -58,7 +58,9 @@ const today = local.toISOString().split('T')[0];
     const constraints: any[] = [where('tanggal', '==', today)];
     if (kelas) constraints.push(where('kelas', '==', kelas));
 
-    const q = query(collection(db, 'attendance'), ...constraints);
+    const q = constraints.length > 0
+  ? query(collection(db, 'attendance'), ...constraints)
+  : collection(db, 'attendance'); // ambil semua data
     
     const unsub = onSnapshot(q, async (snap) => {
       const records: AttendanceRecord[] = [];
