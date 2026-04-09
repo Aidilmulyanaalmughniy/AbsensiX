@@ -9,23 +9,22 @@ export const useAttendance = (kelas?: string, tanggal?: string, uid?: string) =>
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-  if (!uid && !kelas && !tanggal) {
-    setLoading(false);
-    return;
-  }
-
+ 
   setLoading(true);
 
   const constraints: any[] = [];
 
-  if (uid) {
-    console.log("UID QUERY:", uid); // DEBUG
-    constraints.push(where('student_id', '==', uid));
-  } else {
-    if (kelas) constraints.push(where('kelas', '==', kelas));
-    if (tanggal) constraints.push(where('tanggal', '==', tanggal));
-  }
+if (uid) {
+  constraints.push(where('student_id', '==', uid));
+}
 
+if (kelas) {
+  constraints.push(where('kelas', '==', kelas));
+}
+
+if (tanggal) {
+  constraints.push(where('tanggal', '==', tanggal));
+}
   const q = query(collection(db, 'attendance'), ...constraints);
 
   const unsub = onSnapshot(q, (snap) => {
